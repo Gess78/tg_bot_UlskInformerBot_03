@@ -68,15 +68,27 @@ async def get_weather_pic():  # TODO СДЕЛАТЬ АСИНХРОННЫМ
     </div>
     <script type="text/javascript" src="https://www.meteoprog.ua/js/winformer.min.js?id=100"></script>
         """
-    # imgkit.from_string(sss, 'data/weather.jpg')
-    options = {"--log-level": "warn"}
-    imgkit.from_string(sss, 'data/weather.jpg', options=options)
 
-    # options = {"--custom-header": [("Accept-Encoding", "gzip")]}
-    # r = imgkit.IMGKit("html", "string", options=options)
-    #
-    # --log-level <level>             Set log level to: none, error, warn or
-    #                                   info (default info)
+    sss2 = '''
+    <link type="text/css" rel="stylesheet" href="https://www.meteoprog.ua/css/winformer.min.css?id=100">
+
+    <div class="meteoprog-informer" style="width: 258px" data-params='{"city_ids":"1456","domain":"https://www.meteoprog.com/ru/","id":"61d14c8d2bac9206558b472c","lang":"ru"}'>
+
+      
+        <a title="Погода в городе Астрахань" target="_blank" href="https://www.meteoprog.com/ru/weather/Astrahan/">
+          <img style="margin: 0 auto; display: block" src="https://www.meteoprog.ua/images/preloader.gif" alt="Loading...">
+        </a>
+        <a target="_blank" class="constructor__met2wlink" href="https://www.meteoprog.com/ru/review/Astrahan/">Погода на 2 недели</a>
+      
+
+      <a class="constructor__metlink" target="_blank" href="https://www.meteoprog.com/ru/">
+        <img style="display: block; margin: 0 auto;" alt="Meteoprog" src="https://www.meteoprog.ua/images/meteoprog-inf.png">
+      </a>
+    </div>
+    <script type="text/javascript" src="https://www.meteoprog.ua/js/winformer.min.js?id=100"></script>
+    '''
+    options = {"--log-level": "warn"}
+    imgkit.from_string(sss2, 'data/weather.jpg', options=options)
 
     im = Image.open('data/weather.jpg')
     im_crop = im.crop((9, 9, 267, 217))
