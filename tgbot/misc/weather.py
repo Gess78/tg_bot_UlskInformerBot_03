@@ -46,7 +46,7 @@ async def get_weather_data():
 
 @logger.catch
 async def get_weather_pic():  # TODO СДЕЛАТЬ АСИНХРОННЫМ
-    sss = """
+    s1 = """
         <link type="text/css" rel="stylesheet" href="https://www.meteoprog.ua/css/winformer.min.css?id=100">
 
     <div class="meteoprog-informer" style="width: 258px"
@@ -69,7 +69,7 @@ async def get_weather_pic():  # TODO СДЕЛАТЬ АСИНХРОННЫМ
     <script type="text/javascript" src="https://www.meteoprog.ua/js/winformer.min.js?id=100"></script>
         """
 
-    sss2 = '''
+    s2 = '''
     <link type="text/css" rel="stylesheet" href="https://www.meteoprog.ua/css/winformer.min.css?id=100">
 
     <div class="meteoprog-informer" style="width: 258px" data-params='{"city_ids":"1456","domain":"https://www.meteoprog.com/ru/","id":"61d14c8d2bac9206558b472c","lang":"ru"}'>
@@ -87,8 +87,77 @@ async def get_weather_pic():  # TODO СДЕЛАТЬ АСИНХРОННЫМ
     </div>
     <script type="text/javascript" src="https://www.meteoprog.ua/js/winformer.min.js?id=100"></script>
     '''
+
+    s3 = '''<!-- Gismeteo Informer (begin) -->
+<div id="GMI_240x90-2_ru_5130" class="gm-info">
+    <div style="position:relative;width:240px;height:90px;border:solid 1px;background:#F5F5F5;border-color:#EAEAEA #E4E4E4 #DDDDDD #E6E6E6;border-radius:4px;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;">
+        <a style="font:11px/13px Arial,Verdana,sans-serif;text-align:center;text-overflow:ellipsis;text-decoration:none;display:block;overflow:hidden;margin:2px 3px;color:#0678CD;" href="https://www.gismeteo.ru/weather-astrakhan-5130/">Астрахань</a>
+        <a style="font:9px/11px Tahoma,Arial,sans-serif;letter-spacing:0.5px;text-align:center;text-decoration:none;position:absolute;bottom:3px;left:0;width:100%;color:#333;" href="https://www.gismeteo.ru"><span style="color:#0099FF;">Gis</span>meteo</a>
+    </div>
+</div>
+<script type="text/javascript">
+(function() {
+    var
+        d = this.document,
+        o = this.navigator.userAgent.match(/MSIE (6|7|8)/) ? true : false,
+        s = d.createElement('script');
+ 
+    s.src  = 'https://www.gismeteo.ru/informers/simple/install/';
+    s.type = 'text/javascript';
+    s[(o ? 'defer' : 'async')] = true;
+    s[(o ? 'onreadystatechange' : 'onload')] = function() {
+        try {new GmI({
+            slug : '93300ecf40078cd0046d36c0e7db5ce0',
+            type : '240x90-2',
+            city : '5130',
+            lang : 'ru'
+        })} catch (e) {}
+    }
+ 
+    d.body.appendChild(s);
+})();
+</script>
+<!-- Gismeteo Informer (finish) -->
+    '''
+
+    s4 = """<!-- Gismeteo Informer (begin) -->
+<div id="GMI_240x90-2_ru_4407" class="gm-info">
+    <div style="position:relative;width:240px;height:90px;border:solid 1px;background:#F5F5F5;border-color:#EAEAEA #E4E4E4 #DDDDDD #E6E6E6;border-radius:4px;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;">
+        <a style="font:11px/13px Arial,Verdana,sans-serif;text-align:center;text-overflow:ellipsis;text-decoration:none;display:block;overflow:hidden;margin:2px 3px;color:#0678CD;" href="https://www.gismeteo.ru/weather-ulyanovsk-4407/">Ульяновск</a>
+        <a style="font:9px/11px Tahoma,Arial,sans-serif;letter-spacing:0.5px;text-align:center;text-decoration:none;position:absolute;bottom:3px;left:0;width:100%;color:#333;" href="https://www.gismeteo.ru"><span style="color:#0099FF;">Gis</span>meteo</a>
+    </div>
+</div>
+<script type="text/javascript">
+(function() {
+    var
+        d = this.document,
+        o = this.navigator.userAgent.match(/MSIE (6|7|8)/) ? true : false,
+        s = d.createElement('script');
+ 
+    s.src  = 'https://www.gismeteo.ru/informers/simple/install/';
+    s.type = 'text/javascript';
+    s[(o ? 'defer' : 'async')] = true;
+    s[(o ? 'onreadystatechange' : 'onload')] = function() {
+        try {new GmI({
+            slug : '93300ecf40078cd0046d36c0e7db5ce0',
+            type : '240x90-2',
+            city : '4407',
+            lang : 'ru'
+        })} catch (e) {}
+    }
+ 
+    d.body.appendChild(s);
+})();
+</script>
+<!-- Gismeteo Informer (finish) -->"""
+
+    # pdfkit.from_string(html_string, "filename.pdf", options=options)
+    #
     options = {"--log-level": "warn"}
-    imgkit.from_string(sss2, 'data/weather.jpg', options=options)
+    imgkit.from_string(s1, 'data/weather.jpg', options=options)
+
+    # options = {'enable-local-file-access': None}
+    # imgkit.from_url('127.0.0.1:8000', 'data/weather.jpg', options=options)
 
     im = Image.open('data/weather.jpg')
     im_crop = im.crop((9, 9, 267, 217))
