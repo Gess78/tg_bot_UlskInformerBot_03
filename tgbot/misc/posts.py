@@ -8,6 +8,8 @@ import aioschedule
 import xmltodict
 from loguru import logger
 
+from tgbot.misc.weather import get_weather_data
+
 
 @logger.catch
 async def get_rss_dict(url_: str) -> typing.OrderedDict:
@@ -63,6 +65,8 @@ async def get_titles():
 async def scheduler():
     await get_titles()
     aioschedule.every(3).minutes.do(get_titles)
+    await get_weather_data()
+    aioschedule.every(3).minutes.do(get_weather_data)
     while True:
         await aioschedule.run_pending()
         await asyncio.sleep(1)
