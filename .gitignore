@@ -132,3 +132,4 @@ dmypy.json
 # by DS
 .idea/
 /..TEMP.py
+/data/weather.jpg

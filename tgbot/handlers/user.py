@@ -6,7 +6,7 @@ from telegram_bot_pagination import InlineKeyboardPaginator
 
 import tgbot.misc.posts
 from tgbot.keyboards.reply import menu
-from tgbot.misc.weather import get_weather_data
+from tgbot.misc.weather import get_weather_data, get_weather_pic
 
 
 async def user_start(message: Message):
@@ -56,23 +56,31 @@ async def send_posts_page(message, page=1):
     )
 
 
-async def get_weather(message: Message):
-    # weather_data = await get_weather_data()
-    weather_data = tgbot.misc.weather.weather_data
-    text = [
-        "Погода:",
-        f"{weather_data['description'].capitalize()}, {weather_data['temp']}°",
-        f"Ощущается как: {weather_data['temp_feels_like']}°",
-        f"Давление: {weather_data['pressure']} мм рт.ст.",
-        f"Влажность: {weather_data['humidity']}%",
-        f"Ветер: {weather_data['wind_speed']} м/с, {weather_data['wind_direction']}",
-    ]
-    await message.answer('\n'.join(text))
+# async def get_weather(message: Message):
+#     # weather_data = await get_weather_data()
+#     weather_data = tgbot.misc.weather.weather_data
+#     text = [
+#         "Погода:",
+#         f"{weather_data['description'].capitalize()}, {weather_data['temp']}°",
+#         f"Ощущается как: {weather_data['temp_feels_like']}°",
+#         f"Давление: {weather_data['pressure']} мм рт.ст.",
+#         f"Влажность: {weather_data['humidity']}%",
+#         f"Ветер: {weather_data['wind_speed']} м/с, {weather_data['wind_direction']}",
+#     ]
+#     await message.answer('\n'.join(text))
+
+
+async def send_weather_pic(message: Message):
+    # await get_weather_pic()
+    # await message.answer_photo('data/weather.jpg')
+    await message.answer_photo(photo=open('data/weather.jpg', 'rb'))
+    # await message.answer('zzz')
 
 
 def register_user(dp: Dispatcher):
     dp.register_message_handler(user_start, commands=["start"], state="*")
     dp.register_message_handler(get_news_titles, text=["📰 Новости"])
-    dp.register_message_handler(get_weather, text=["🌡️ Погода"])
+    dp.register_message_handler(send_weather_pic, text=["🌡️ Погода"])
+    # dp.register_message_handler(get_weather, text=["🌡️ Погода"])
 
     dp.register_callback_query_handler(inline_kb_answer_callback_handler, text_startswith="page#")
