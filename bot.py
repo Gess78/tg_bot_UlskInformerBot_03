@@ -5,6 +5,7 @@ import aioschedule
 from aiogram import Bot, Dispatcher
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.contrib.fsm_storage.redis import RedisStorage2
+from loguru import logger
 
 from tgbot.config import load_config
 from tgbot.filters.admin import AdminFilter
@@ -14,7 +15,8 @@ from tgbot.handlers.user import register_user
 from tgbot.middlewares.db import DbMiddleware
 from tgbot.misc.posts import get_titles, scheduler
 
-logger = logging.getLogger(__name__)
+
+# logger = logging.getLogger(__name__)
 
 
 async def noon_print():
