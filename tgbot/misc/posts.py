@@ -54,9 +54,4 @@ async def get_titles():
     return news_titles0
 
 
-async def scheduler():
-    aioschedule.every(1).minutes.do(get_titles)
-    aioschedule.every(1).minutes.do(get_weather_data)
-    while True:
-        await aioschedule.run_pending()
-        await asyncio.sleep(1)
+

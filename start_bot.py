@@ -12,7 +12,7 @@ from tgbot.handlers.admin import register_admin
 from tgbot.handlers.echo import register_echo
 from tgbot.handlers.user import register_user
 from tgbot.middlewares.db import DbMiddleware
-from tgbot.misc.posts import scheduler
+from tgbot.misc.scheduler import scheduler
 
 
 def register_all_middlewares(dp):
