@@ -20,6 +20,8 @@ class TgBot:
 
 @dataclass
 class Miscellaneous:
+    openweathermap_token: str
+    items_per_page: int
     other_params: str = None
 
 
@@ -30,7 +32,7 @@ class Config:
     misc: Miscellaneous
 
 
-def load_config(path: str = None):
+def load_config(path: str = None) -> Config:
     env = Env()
     env.read_env(path)
 
@@ -41,10 +43,16 @@ def load_config(path: str = None):
             use_redis=env.bool("USE_REDIS"),
         ),
         db=DbConfig(
-            host=env.str('DB_HOST'),
-            password=env.str('DB_PASS'),
-            user=env.str('DB_USER'),
-            database=env.str('DB_NAME')
+            host=env.str("DB_HOST"),
+            password=env.str("DB_PASS"),
+            user=env.str("DB_USER"),
+            database=env.str("DB_NAME"),
         ),
-        misc=Miscellaneous()
+        misc=Miscellaneous(
+            openweathermap_token=env.str("OPENWEATHERMAP_TOKEN"),
+            items_per_page=env.int("ITEMS_PER_PAGE"),
+        ),
     )
+
+
+config: Config = load_config()

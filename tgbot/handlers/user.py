@@ -7,7 +7,9 @@ from telegram_bot_pagination import InlineKeyboardPaginator
 
 import tgbot.misc.posts
 from tgbot.keyboards.reply import menu
-from tgbot.misc.weather import get_weather_data, get_weather_pic
+
+from tgbot.config import config
+from tgbot.data import data
 
 
 async def user_start(message: Message):
@@ -15,9 +17,6 @@ async def user_start(message: Message):
         f"Здравствуйте, {message.from_user.full_name}!\nВыберите категорию из меню ниже",
         reply_markup=menu,
     )
-
-
-ITEMS_PER_PAGE = 5
 
 
 async def get_news_titles(message: Message):
@@ -34,20 +33,20 @@ async def inline_kb_answer_callback_handler(query: CallbackQuery):
 
 
 async def send_posts_page(message, page=1):
-    # news_titles = await get_titles()
-    news_titles = tgbot.misc.posts.news_titles0
+    items_per_page = config.misc.items_per_page
+    news_titles = tgbot.data.data.posts.data
 
     paginator = InlineKeyboardPaginator(
-        math.ceil(len(news_titles) / ITEMS_PER_PAGE),
+        math.ceil(len(news_titles) / items_per_page),
         current_page=page,
         data_pattern="page#{page}",
     )
 
     text = ""
-    for i in range(ITEMS_PER_PAGE):
-        if (ITEMS_PER_PAGE * (page - 1) + i) < len(news_titles):
-            title = news_titles[ITEMS_PER_PAGE * (page - 1) + i].get("title")
-            link = news_titles[ITEMS_PER_PAGE * (page - 1) + i].get("link")
+    for i in range(items_per_page):
+        if (items_per_page * (page - 1) + i) < len(news_titles):
+            title = news_titles[items_per_page * (page - 1) + i].get("title")
+            link = news_titles[items_per_page * (page - 1) + i].get("link")
             text += f"<a href='{link}'>{title}</a>\n\n"
 
     await message.answer(
@@ -57,31 +56,23 @@ async def send_posts_page(message, page=1):
     )
 
 
-# async def get_weather(message: Message):
-#     # weather_data = await get_weather_data()
-#     weather_data = tgbot.misc.weather.weather_data
-#     text = [
-#         "Погода:",
-#         f"{weather_data['description'].capitalize()}, {weather_data['temp']}°",
-#         f"Ощущается как: {weather_data['temp_feels_like']}°",
-#         f"Давление: {weather_data['pressure']} мм рт.ст.",
-#         f"Влажность: {weather_data['humidity']}%",
-#         f"Ветер: {weather_data['wind_speed']} м/с, {weather_data['wind_direction']}",
-#     ]
-#     await message.answer('\n'.join(text))
-
 @logger.catch
-async def send_weather_pic(message: Message):
-    # await get_weather_pic()
-    # await message.answer_photo('data/weather.jpg')
-    await message.answer_photo(photo=open('data/weather.jpg', 'rb'))
-    # await message.answer('zzz')
+async def send_weather(message: Message):
+    weather_data = data.weather
+    text = [
+        "Погода:",
+        f"{weather_data.description.capitalize()}, {weather_data.temp}°",
+        f"Ощущается как: {weather_data.temp_feels_like}°",
+        f"Давление: {weather_data.pressure} мм рт.ст.",
+        f"Влажность: {weather_data.humidity}%",
+        f"Ветер: {weather_data.wind_speed} м/с, {weather_data.wind_direction}",
+    ]
+
+    await message.answer("\n".join(text))
 
 
 def register_user(dp: Dispatcher):
     dp.register_message_handler(user_start, commands=["start"], state="*")
     dp.register_message_handler(get_news_titles, text=["📰 Новости"])
-    dp.register_message_handler(send_weather_pic, text=["🌡️ Погода"])
-    # dp.register_message_handler(get_weather, text=["🌡️ Погода"])
-
+    dp.register_message_handler(send_weather, text=["🌡️ Погода"])
     dp.register_callback_query_handler(inline_kb_answer_callback_handler, text_startswith="page#")
