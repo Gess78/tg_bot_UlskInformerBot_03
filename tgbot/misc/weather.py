@@ -31,6 +31,7 @@ async def get_weather_data():
         async with session.get(url_) as resp:
             json_data = await resp.json()
             weather_data = {
+                "dt": json_data.get("dt"),
                 "icon": json_data.get("weather")[0].get("icon"),
                 "description": json_data.get("weather")[0].get("description"),
                 "temp": int(json_data.get("main").get("temp")),

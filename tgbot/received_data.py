@@ -2,12 +2,15 @@ import asyncio
 import typing
 from dataclasses import dataclass
 
+from loguru import logger
+
 from tgbot.misc.posts import get_titles
 from tgbot.misc.weather import get_weather_data
 
 
 @dataclass
 class Weather:
+    dt: int
     icon: str
     description: str
     temp: int
@@ -41,6 +44,7 @@ async def load_data() -> Data:
 
     return Data(
         weather=Weather(
+            dt=weather_data["dt"],
             icon=weather_data["icon"],
             description=weather_data["description"],
             temp=weather_data["temp"],
@@ -57,3 +61,4 @@ async def load_data() -> Data:
 
 loop = asyncio.get_event_loop()
 data: Data = loop.run_until_complete(load_data())  # Будет ждать, пока some_function не закончит выполнение.
+logger.info('Initial loading done...')

@@ -9,7 +9,7 @@ import tgbot.misc.posts
 from tgbot.keyboards.reply import menu
 
 from tgbot.config import config
-from tgbot.data import data
+from tgbot.received_data import data
 
 
 async def user_start(message: Message):
@@ -34,7 +34,7 @@ async def inline_kb_answer_callback_handler(query: CallbackQuery):
 
 async def send_posts_page(message, page=1):
     items_per_page = config.misc.items_per_page
-    news_titles = tgbot.data.data.posts.data
+    news_titles = tgbot.received_data.data.posts.data
 
     paginator = InlineKeyboardPaginator(
         math.ceil(len(news_titles) / items_per_page),
@@ -56,20 +56,20 @@ async def send_posts_page(message, page=1):
     )
 
 
-@logger.catch
-async def send_weather(message: Message):
-    weather_data = data.weather
-    text = [
-        "Погода:",
-        f"{weather_data.icon}",
-        f"{weather_data.description.capitalize()}, {weather_data.temp}°",
-        f"Ощущается как: {weather_data.temp_feels_like}°",
-        f"Давление: {weather_data.pressure} мм рт.ст.",
-        f"Влажность: {weather_data.humidity}%",
-        f"Ветер: {weather_data.wind_speed} м/с, {weather_data.wind_direction}",
-    ]
-
-    await message.answer("\n".join(text))
+# @logger.catch
+# async def send_weather(message: Message):
+#     weather_data = data.weather
+#     text = [
+#         "Погода:",
+#         f"{weather_data.icon}",
+#         f"{weather_data.description.capitalize()}, {weather_data.temp}°",
+#         f"Ощущается как: {weather_data.temp_feels_like}°",
+#         f"Давление: {weather_data.pressure} мм рт.ст.",
+#         f"Влажность: {weather_data.humidity}%",
+#         f"Ветер: {weather_data.wind_speed} м/с, {weather_data.wind_direction}",
+#     ]
+#
+#     await message.answer("\n".join(text))
 
 
 @logger.catch
@@ -77,7 +77,7 @@ async def send_weather_pic(message: Message):
     weather_data = data.weather
     text = [
         # "Погода:",
-        # f"{weather_data.icon}",
+        f"{weather_data.dt}",
         f"{weather_data.description.capitalize()}",
         f"Температура: {weather_data.temp}°",
         f"ощущается как: {weather_data.temp_feels_like}°",
