@@ -8,7 +8,7 @@ from tgbot.misc.weather import get_weather_data
 
 @dataclass
 class Weather:
-
+    icon: str
     description: str
     temp: int
     temp_feels_like: int
@@ -41,6 +41,7 @@ async def load_data() -> Data:
 
     return Data(
         weather=Weather(
+            icon=weather_data["icon"],
             description=weather_data["description"],
             temp=weather_data["temp"],
             temp_feels_like=weather_data["temp_feels_like"],

@@ -18,9 +18,6 @@ def wind_deg_to_str2(deg):
     return arr[int(abs((deg - 22.5) % 360) / 45)]
 
 
-# weather_data: dict = {}
-
-
 @logger.catch
 async def get_weather_data():
     url_ = (
@@ -33,8 +30,8 @@ async def get_weather_data():
     async with aiohttp.ClientSession() as session:
         async with session.get(url_) as resp:
             json_data = await resp.json()
-            # global weather_data
             weather_data = {
+                "icon": json_data.get("weather")[0].get("icon"),
                 "description": json_data.get("weather")[0].get("description"),
                 "temp": int(json_data.get("main").get("temp")),
                 "temp_feels_like": int(json_data.get("main").get("feels_like")),

@@ -133,3 +133,4 @@ dmypy.json
 .idea/
 /..TEMP.py
 /data/weather.jpg
+/_requirements.txt

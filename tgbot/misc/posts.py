@@ -1,14 +1,10 @@
-import asyncio
 import re
 import timeit
 import typing
 
 import aiohttp
-import aioschedule
 import xmltodict
 from loguru import logger
-
-from tgbot.misc.weather import get_weather_data
 
 
 @logger.catch
@@ -20,9 +16,12 @@ async def get_rss_dict(url_: str) -> typing.OrderedDict:
                 return xmltodict.parse(rss)
 
 
-async def get_tiles(rss_dict_: typing.OrderedDict):
+async def get_titles():
+    url = "https://ulpressa.ru/feed/"
+    t00 = timeit.default_timer()
+    rss_dict_ = await get_rss_dict(url)
     items = rss_dict_.get("rss").get("channel").get("item")
-    res = []
+    posts = []
     pattern = r"https://ulpressa.ru\S*?(jpg|png|jpeg)"
     for i in items:
         post_id = i.get("guid").get("#text").split("=")[1]
@@ -34,7 +33,7 @@ async def get_tiles(rss_dict_: typing.OrderedDict):
             pic = re.search(pattern, description)[0]
         else:
             pic = None
-        res.append(
+        posts.append(
             {
                 "post_id": post_id,
                 "title": title,
@@ -43,15 +42,6 @@ async def get_tiles(rss_dict_: typing.OrderedDict):
                 "pic": pic,
             }
         )
-    return res
-
-
-async def get_titles():
-    url = "https://ulpressa.ru/feed/"
-    t00 = timeit.default_timer()
-    news_titles0 = await get_tiles(await get_rss_dict(url))
     logger.info(f"ФОРМИРОВАНИЕ ЗАПИСЕЙ: {timeit.default_timer() - t00:.2f} сек.")
-    return news_titles0
-
-
+    return posts
 

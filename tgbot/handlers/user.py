@@ -1,7 +1,7 @@
 import math
 
 from aiogram import Dispatcher
-from aiogram.types import Message, CallbackQuery
+from aiogram.types import Message, CallbackQuery, InputFile
 from loguru import logger
 from telegram_bot_pagination import InlineKeyboardPaginator
 
@@ -61,6 +61,7 @@ async def send_weather(message: Message):
     weather_data = data.weather
     text = [
         "Погода:",
+        f"{weather_data.icon}",
         f"{weather_data.description.capitalize()}, {weather_data.temp}°",
         f"Ощущается как: {weather_data.temp_feels_like}°",
         f"Давление: {weather_data.pressure} мм рт.ст.",
@@ -71,8 +72,27 @@ async def send_weather(message: Message):
     await message.answer("\n".join(text))
 
 
+@logger.catch
+async def send_weather_pic(message: Message):
+    weather_data = data.weather
+    text = [
+        # "Погода:",
+        # f"{weather_data.icon}",
+        f"{weather_data.description.capitalize()}",
+        f"Температура: {weather_data.temp}°",
+        f"ощущается как: {weather_data.temp_feels_like}°",
+        f"Давление: {weather_data.pressure} мм рт.ст.",
+        f"Влажность: {weather_data.humidity}%",
+        f"Ветер: {weather_data.wind_speed} м/с, {weather_data.wind_direction}",
+    ]
+    await message.answer_document(document=InputFile(path_or_bytesio=f"tgbot/media/images/{weather_data.icon}.webp"),
+                                  caption="\n".join(text))
+    await message.answer("\n".join(text))
+
+
 def register_user(dp: Dispatcher):
     dp.register_message_handler(user_start, commands=["start"], state="*")
     dp.register_message_handler(get_news_titles, text=["📰 Новости"])
-    dp.register_message_handler(send_weather, text=["🌡️ Погода"])
+    # dp.register_message_handler(send_weather, text=["🌡️ Погода"])
+    dp.register_message_handler(send_weather_pic, text=["🌡️ Погода"])
     dp.register_callback_query_handler(inline_kb_answer_callback_handler, text_startswith="page#")
