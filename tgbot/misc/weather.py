@@ -2,6 +2,7 @@ import aiohttp
 from loguru import logger
 
 from tgbot.config import config
+import datetime
 
 
 def wind_deg_to_str2(deg):
@@ -30,8 +31,9 @@ async def get_weather_data():
     async with aiohttp.ClientSession() as session:
         async with session.get(url_) as resp:
             json_data = await resp.json()
+            dt = datetime.datetime.fromtimestamp(json_data.get("dt")).isoformat()
             weather_data = {
-                "dt": json_data.get("dt"),
+                "dt": dt,
                 "icon": json_data.get("weather")[0].get("icon"),
                 "description": json_data.get("weather")[0].get("description"),
                 "temp": int(json_data.get("main").get("temp")),

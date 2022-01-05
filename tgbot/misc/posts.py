@@ -16,15 +16,17 @@ async def get_rss_dict(url_: str) -> typing.OrderedDict:
                 return xmltodict.parse(rss)
 
 
-async def get_titles():
+async def get_posts():
     url = "https://ulpressa.ru/feed/"
     t00 = timeit.default_timer()
     rss_dict_ = await get_rss_dict(url)
+    lastBuildDate = rss_dict_.get("rss").get("channel").get("lastBuildDate")
     items = rss_dict_.get("rss").get("channel").get("item")
     posts = []
     pattern = r"https://ulpressa.ru\S*?(jpg|png|jpeg)"
     for i in items:
         post_id = i.get("guid").get("#text").split("=")[1]
+
         title = i.get("title")
         description = i.get("description")
         short_description = description.split("/>")[-1]
@@ -37,6 +39,7 @@ async def get_titles():
             {
                 "post_id": post_id,
                 "title": title,
+                "lastBuildDate": lastBuildDate,
                 "short_description": short_description,
                 "link": link,
                 "pic": pic,
@@ -44,4 +47,3 @@ async def get_titles():
         )
     logger.info(f"ФОРМИРОВАНИЕ ЗАПИСЕЙ: {timeit.default_timer() - t00:.2f} сек.")
     return posts
-

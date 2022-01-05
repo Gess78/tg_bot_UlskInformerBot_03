@@ -4,26 +4,8 @@ from dataclasses import dataclass
 
 from loguru import logger
 
-from tgbot.misc.posts import get_titles
+from tgbot.misc.posts import get_posts
 from tgbot.misc.weather import get_weather_data
-
-
-@dataclass
-class Weather:
-    dt: int
-    icon: str
-    description: str
-    temp: int
-    temp_feels_like: int
-    pressure: int
-    humidity: int
-    wind_speed: int
-    wind_direction: str
-
-
-@dataclass
-class Posts:
-    data: list[dict[str, typing.Optional[str]]]
 
 
 @dataclass
@@ -33,30 +15,21 @@ class Miscellaneous:
 
 @dataclass
 class Data:
-    weather: Weather
-    posts: Posts
-    misc: Miscellaneous
+    weather: dict
+    posts: list[dict[str, typing.Optional[str]]]
+    misc: typing.Optional[dict] = None
 
 
 async def load_data() -> Data:
-    weather_data = await get_weather_data()
-    posts_data = await get_titles()
-
     return Data(
-        weather=Weather(
-            dt=weather_data["dt"],
-            icon=weather_data["icon"],
-            description=weather_data["description"],
-            temp=weather_data["temp"],
-            temp_feels_like=weather_data["temp_feels_like"],
-            pressure=weather_data["pressure"],
-            humidity=weather_data["humidity"],
-            wind_speed=weather_data["wind_speed"],
-            wind_direction=weather_data["wind_direction"],
-        ),
-        posts=Posts(data=posts_data),
-        misc=Miscellaneous(),
+        weather=await get_weather_data(),
+        posts=await get_posts(),
     )
+
+
+async def update_data():
+    data.weather = await get_weather_data()
+    data.posts = await get_posts()
 
 
 loop = asyncio.get_event_loop()

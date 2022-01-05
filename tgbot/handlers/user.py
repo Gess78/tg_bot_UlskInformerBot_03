@@ -34,7 +34,7 @@ async def inline_kb_answer_callback_handler(query: CallbackQuery):
 
 async def send_posts_page(message, page=1):
     items_per_page = config.misc.items_per_page
-    news_titles = tgbot.received_data.data.posts.data
+    news_titles = tgbot.received_data.data.posts
 
     paginator = InlineKeyboardPaginator(
         math.ceil(len(news_titles) / items_per_page),
@@ -47,7 +47,8 @@ async def send_posts_page(message, page=1):
         if (items_per_page * (page - 1) + i) < len(news_titles):
             title = news_titles[items_per_page * (page - 1) + i].get("title")
             link = news_titles[items_per_page * (page - 1) + i].get("link")
-            text += f"<a href='{link}'>{title}</a>\n\n"
+            lastBuildDate = news_titles[items_per_page * (page - 1) + i].get("lastBuildDate")
+            text += f"<a href='{link}'>{title}</a> - ({lastBuildDate})\n\n"
 
     await message.answer(
         text,
@@ -56,36 +57,22 @@ async def send_posts_page(message, page=1):
     )
 
 
-# @logger.catch
-# async def send_weather(message: Message):
-#     weather_data = data.weather
-#     text = [
-#         "Погода:",
-#         f"{weather_data.icon}",
-#         f"{weather_data.description.capitalize()}, {weather_data.temp}°",
-#         f"Ощущается как: {weather_data.temp_feels_like}°",
-#         f"Давление: {weather_data.pressure} мм рт.ст.",
-#         f"Влажность: {weather_data.humidity}%",
-#         f"Ветер: {weather_data.wind_speed} м/с, {weather_data.wind_direction}",
-#     ]
-#
-#     await message.answer("\n".join(text))
-
-
 @logger.catch
 async def send_weather_pic(message: Message):
-    weather_data = data.weather
+    # weather_data = data.weather
+    weather_data = tgbot.received_data.data.weather
+    logger.debug(weather_data)
     text = [
         # "Погода:",
-        f"{weather_data.dt}",
-        f"{weather_data.description.capitalize()}",
-        f"Температура: {weather_data.temp}°",
-        f"ощущается как: {weather_data.temp_feels_like}°",
-        f"Давление: {weather_data.pressure} мм рт.ст.",
-        f"Влажность: {weather_data.humidity}%",
-        f"Ветер: {weather_data.wind_speed} м/с, {weather_data.wind_direction}",
+        f"{weather_data['dt']}",
+        f"{weather_data['description'].capitalize()}",
+        f"Температура: {weather_data['temp']}°",
+        f"ощущается как: {weather_data['temp_feels_like']}°",
+        f"Давление: {weather_data['pressure']} мм рт.ст.",
+        f"Влажность: {weather_data['humidity']}%",
+        f"Ветер: {weather_data['wind_speed']} м/с, {weather_data['wind_direction']}",
     ]
-    await message.answer_document(document=InputFile(path_or_bytesio=f"tgbot/media/images/{weather_data.icon}.webp"),
+    await message.answer_document(document=InputFile(path_or_bytesio=f"tgbot/media/images/{weather_data['icon']}.webp"),
                                   caption="\n".join(text))
     await message.answer("\n".join(text))
 
@@ -93,6 +80,5 @@ async def send_weather_pic(message: Message):
 def register_user(dp: Dispatcher):
     dp.register_message_handler(user_start, commands=["start"], state="*")
     dp.register_message_handler(get_news_titles, text=["📰 Новости"])
-    # dp.register_message_handler(send_weather, text=["🌡️ Погода"])
     dp.register_message_handler(send_weather_pic, text=["🌡️ Погода"])
     dp.register_callback_query_handler(inline_kb_answer_callback_handler, text_startswith="page#")
