@@ -12,7 +12,7 @@ async def scheduler():
     # aioschedule.every(30).minutes.do(get_weather_data)
     # aioschedule.every(10).seconds.do(get_posts)
     # aioschedule.every(10).seconds.do(get_weather_data)
-    aioschedule.every(10).seconds.do(update_data)
+    aioschedule.every(1_800).seconds.do(update_data)
     while True:
         await aioschedule.run_pending()
         await asyncio.sleep(1)
